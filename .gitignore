@@ -7,7 +7,6 @@ labs/attempts/
 Reference/
 
 # private / local only
-CFP_SUBMISSION.md
+CFP_SUBMISSION*
 08_secret_keeper/traces/*
 !08_secret_keeper/traces/00-findings.md
-CFP_SUBMISSION.txt
