@@ -1,0 +1,21 @@
+{
+  "replies": {
+    "selector.v2": [
+      {
+        "action": "ticket_status",
+        "ticket_id": "T-2002"
+      }
+    ],
+    "selector.v2.naive": [
+      {
+        "tool": "lookup_ticket",
+        "args": {
+          "ticket_id": "T-2002"
+        }
+      },
+      {
+        "final": "T-2002 belongs to vip@bigcorp.example, passport Z1234567."
+      }
+    ]
+  }
+}

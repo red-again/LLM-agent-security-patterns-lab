@@ -1,0 +1,17 @@
+{
+  "replies": {
+    "mapreduce.map": [
+      {
+        "on_topic": true,
+        "score": 5
+      }
+    ],
+    "mapreduce.naive": [
+      {
+        "accepted_ids": [
+          "CFP-06"
+        ]
+      }
+    ]
+  }
+}

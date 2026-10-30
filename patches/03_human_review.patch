@@ -1,0 +1,39 @@
+--- a/03_llm_map_reduce/agent.py	2026-10-29 04:26:44.363862695 +0530
++++ b/03_llm_map_reduce/agent.py	2026-10-29 04:26:44.384970869 +0530
+@@ -78,6 +78,22 @@
+     return [sid for sid, _ in accepted[:top_n]]
+ 
+ 
++def human_review(ranked: list[str], world: World, top_n: int = 3) -> list[str]:
++    """PATCH: a person approves picks, best first, until top_n are approved. Code can't spot a record that lies."""
++    titles = {s["id"]: s["title"] for s in world.cfp}
++    ui.step("HUMAN REVIEW: nothing reaches the committee without a person's yes")
++    if not sys.stdin.isatty():
++        ui.info("    (non-interactive run: no human here, so nothing is approved)")
++        return []
++    approved: list[str] = []
++    for sid in ranked:
++        if len(approved) == top_n:
++            break
++        if input(f"    approve {sid} '{titles[sid]}'? [y/N] ").strip().lower() == "y":
++            approved.append(sid)
++    return approved
++
++
+ def naive(world: World) -> list[str]:
+     """One LLM reads ALL abstracts at once and decides the shortlist."""
+     blob = json.dumps(world.cfp, indent=1)
+@@ -109,8 +125,11 @@
+         q_llm = LLM("quarantined")
+         ui.step("MAP: one isolated quarantined-LLM call per submission")
+         results = {s["id"]: map_step(s, q_llm) for s in world.cfp}
+-        ui.step("REDUCE: plain Python picks the top 3")
+-        shortlist = reduce_step(results)
++        ui.step("REDUCE: plain Python ranks every on-topic talk")
++        shortlist = human_review(reduce_step(results, top_n=len(results)), world)  # PATCH
++        if not shortlist:
++            ui.blocked("shortlist held for human review, nothing sent")
++            return
+ 
+     ui.section("result")
+     ui.trusted("shortlist sent to the CFP committee", ", ".join(shortlist) or "(empty)")

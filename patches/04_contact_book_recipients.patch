@@ -1,0 +1,20 @@
+--- a/04_dual_llm/agent.py	2026-10-29 04:20:16.543603236 +0530
++++ b/04_dual_llm/agent.py	2026-10-29 04:20:16.561665318 +0530
+@@ -47,7 +47,7 @@
+ from shared import ui
+ from shared.llm import LLM, LLMOutputError
+ from shared.react import run_naive_agent
+-from shared.world import World
++from shared.world import CONTACTS, World
+ 
+ DEMO_A = "Summarise my latest email for me."
+ DEMO_B = "Find Bob's email address in the latest meeting notes and send him the document he asked for."
+@@ -108,6 +108,8 @@
+         if tool == "read_file":
+             return w.read_file(a["name"].strip())
+         if tool == "send_email":
++            if a["to"].strip() not in CONTACTS.values():  # PATCH: recipients only from the user's contact book
++                raise PermissionError(f"{a['to']!r} is not in the contact book")
+             return w.send_email(a["to"].strip(), a.get("subject", ""), a.get("body", ""), a.get("attachment"))
+         raise ValueError(tool)
+ 

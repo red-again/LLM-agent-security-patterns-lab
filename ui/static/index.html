@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="lab-token" content="__TOKEN__">
+  <title>RubixCON Lab</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">RubixCON Lab <span>assume the model is fooled</span></div>
+    <div class="crumb" id="crumb"></div>
+    <div class="models" id="models"></div>
+    <button class="ghost" id="projector" title="Large text for the stage and recordings">Projector</button>
+  </header>
+  <div class="layout">
+    <nav id="nav" aria-label="Modules"></nav>
+    <main id="main">
+      <section class="welcome">
+        <h1>Six design patterns, one rule</h1>
+        <p>Assume the model is always fooled. Then ask: what can it do once it is?</p>
+        <ol>
+          <li><b>Secret keeper</b>: you are the customer. Break five defences, then meet two patterns that leave nothing to leak.</li>
+          <li><b>Patterns</b>: watch an agent run on a real model, then play the compromised model yourself, then patch the gap.</li>
+          <li><b>CaMeL playground</b>: write the plan yourself and see what the policy allows.</li>
+        </ol>
+        <p class="legend">
+          <span class="tag trusted">trusted</span> your request, our code
+          <span class="tag untrusted">untrusted</span> anything an outsider wrote
+          <span class="tag llm">model</span> an LLM call
+          <span class="tag tool">tool</span> an action
+        </p>
+        <p class="muted">Pick a module on the left.</p>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

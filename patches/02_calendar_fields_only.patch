@@ -1,0 +1,16 @@
+--- a/02_plan_then_execute/agent.py	2026-10-29 04:08:54.572921487 +0530
++++ b/02_plan_then_execute/agent.py	2026-10-29 04:08:54.596881505 +0530
+@@ -106,8 +106,11 @@
+     for n, s in enumerate(frozen, 1):
+         a = {k: resolve(v) for k, v in s.args.items()}
+         if s.tool == "read_calendar":
+-            out = json.dumps(world.read_calendar(), indent=1)
+-            ui.untrusted("calendar (contains an outsider's invite)", out)
++            events = world.read_calendar()
++            ui.untrusted("calendar (contains an outsider's invite)", json.dumps(events, indent=1))
++            # PATCH: only fixed fields flow on. Anyone who sends an invite writes its description.
++            out = "\n".join(f"{e['time']} {e['title'][:60]}" for e in events)
++            ui.ok(f"PATCH: only time + title are passed on:\n{out}")
+         elif s.tool == "read_inbox":
+             out = json.dumps(world.read_inbox(), indent=1)
+             ui.untrusted("inbox", out)

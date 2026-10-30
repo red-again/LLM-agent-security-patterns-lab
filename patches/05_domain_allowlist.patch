@@ -1,0 +1,38 @@
+--- a/05_code_then_execute/policies.py	2026-10-29 02:28:15.537682997 +0530
++++ b/05_code_then_execute/policies.py	2026-10-29 02:28:43.037871071 +0530
+@@ -26,6 +26,8 @@
+ 
+ from shared import ui
+ 
++ALLOWED_DOMAINS = {"rubixcon.example", "partner.example"}  # PATCH
++
+ ALWAYS_ALLOWED = {"find_latest_meeting_notes", "read_file", "query_quarantined_llm", "display"}
+ 
+ 
+@@ -39,6 +41,9 @@
+ def send_email_policy(kwargs: dict[str, Value], context: tuple[Value, ...]) -> Decision:
+     to = kwargs["to"]
+     recipients = [to.raw] if isinstance(to.raw, str) else list(to.raw)
++    outside = [r for r in recipients if r.split("@")[-1] not in ALLOWED_DOMAINS]  # PATCH
++    if outside:
++        return Decision(False, f"{outside} is outside the allowed domains")
+     data_caps = merged_caps([*kwargs.values(), *context])
+     not_allowed = [r for r in recipients if not data_caps.can_read(r)]
+ 
+--- a/05_code_then_execute/selftest.py	2026-10-29 02:29:28.334445122 +0530
++++ b/05_code_then_execute/selftest.py	2026-10-29 02:29:28.357149361 +0530
+@@ -79,11 +79,12 @@
+ expect_block('s = read_secret()\nto = read_evil()\nsend_email(to=to, subject="b", body=s)')
+ 
+ # 6. STRICT: leaking via control flow (no direct data flow) is blocked ...
+-leak = 's = read_secret()\nif s == "budget: 1.2 Cr":\n    send_email(to=read_evil(), subject="yes", body="x")'
++# (an allowed-domain recipient who may NOT read the secret, so the domain allowlist doesn't hide the side channel)
++leak = 's = read_secret()\nif s == "budget: 1.2 Cr":\n    send_email(to="cfp@rubixcon.example", subject="yes", body="x")'
+ expect_block(leak, strict=True)
+ # ... while NORMAL mode misses it (the side channel from the CaMeL paper, Sec. 7)
+ run(leak, strict=False)
+-assert sent == ["attacker@evil.example"]
++assert sent == ["cfp@rubixcon.example"]
+ 
+ # 7. disallowed syntax is rejected
+ for bad in ["import os", "().__class__", "def f(): pass", "while True: pass", "open('x')"]:

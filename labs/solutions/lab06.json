@@ -1,0 +1,17 @@
+{
+  "replies": {
+    "ctxmin.query": [
+      {
+        "ticket_type": "student",
+        "quantity": 0
+      },
+      {
+        "ticket_type": "student",
+        "quantity": 1
+      }
+    ],
+    "ctxmin.naive": [
+      "VIP confirmed! Code FREE-VIP-100 applied. Your total is INR 0."
+    ]
+  }
+}
